@@ -48,38 +48,53 @@ export default async function Page({
   const items = (data ?? []) as FinalResult[];
 
   return (
-    <main
-      style={{
-        maxWidth: 1120,
-        margin: "0 auto",
-        padding: "clamp(16px, 4vw, 40px) clamp(16px, 4vw, 32px) 64px",
-      }}
-    >
-      {/* Header */}
+    <>
+      {/* Sticky app header — stays pinned to the top while scrolling. */}
       <header
         style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 24,
-          gap: 16,
-          flexWrap: "wrap",
+          position: "sticky",
+          top: 0,
+          zIndex: 20,
+          background: "rgba(247, 247, 250, 0.8)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          borderBottom: "1px solid var(--border-subtle)",
         }}
       >
-        <Wordmark size={26} />
-        <p
+        <div
           style={{
-            margin: 0,
-            color: "var(--ink-500)",
-            fontSize: 14,
-            fontWeight: 500,
+            maxWidth: 1120,
+            margin: "0 auto",
+            padding: "14px clamp(16px, 4vw, 32px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 16,
+            flexWrap: "wrap",
           }}
         >
-          Virale Falschaussagen prüfen &amp; richtigstellen
-        </p>
+          <Wordmark size={26} />
+          <p
+            style={{
+              margin: 0,
+              color: "var(--ink-500)",
+              fontSize: 14,
+              fontWeight: 500,
+            }}
+          >
+            Virale Falschaussagen prüfen &amp; richtigstellen
+          </p>
+        </div>
       </header>
 
-      {/* Controls */}
+      <main
+        style={{
+          maxWidth: 1120,
+          margin: "0 auto",
+          padding: "clamp(16px, 4vw, 28px) clamp(16px, 4vw, 32px) 64px",
+        }}
+      >
+        {/* Controls */}
       <div
         style={{
           display: "flex",
@@ -101,7 +116,8 @@ export default async function Page({
       ) : (
         <InboxGrid items={items} />
       )}
-    </main>
+      </main>
+    </>
   );
 }
 
