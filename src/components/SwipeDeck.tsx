@@ -118,10 +118,13 @@ export function SwipeDeck({
   return (
     <div
       style={{
+        flex: 1,
+        minHeight: 0,
+        width: "100%",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        gap: 18,
+        gap: 14,
       }}
     >
       {/* Platform filter chips */}
@@ -131,6 +134,7 @@ export function SwipeDeck({
           gap: 8,
           flexWrap: "wrap",
           justifyContent: "center",
+          flexShrink: 0,
         }}
       >
         {FILTERS.map((f) => {
@@ -190,24 +194,35 @@ export function SwipeDeck({
         </div>
       )}
 
-      {/* Card stage */}
+      {/* Card stage — fills remaining height; card keeps a portrait ratio */}
       <div
-        onPointerDown={onDown}
-        onPointerMove={onMove}
-        onPointerUp={onUp}
-        onPointerCancel={onUp}
         style={{
-          position: "relative",
+          flex: 1,
+          minHeight: 0,
           width: "100%",
-          maxWidth: 420,
-          aspectRatio: "3 / 4.2",
-          touchAction: "pan-y",
-          cursor: cur ? "grab" : "default",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        {cur ? (
-          <>
-            {deck[2] && (
+        <div
+          onPointerDown={onDown}
+          onPointerMove={onMove}
+          onPointerUp={onUp}
+          onPointerCancel={onUp}
+          style={{
+            position: "relative",
+            height: "100%",
+            aspectRatio: "3 / 4.2",
+            maxWidth: "100%",
+            maxHeight: "100%",
+            touchAction: "pan-y",
+            cursor: cur ? "grab" : "default",
+          }}
+        >
+          {cur ? (
+            <>
+              {deck[2] && (
               <div
                 key="b2"
                 style={{
@@ -244,14 +259,22 @@ export function SwipeDeck({
               onPlay={() => setVideoItem(cur)}
             />
           </>
-        ) : (
-          <EmptyDeck />
-        )}
+          ) : (
+            <EmptyDeck />
+          )}
+        </div>
       </div>
 
       {/* Action bar */}
       {cur && (
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 16,
+            flexShrink: 0,
+          }}
+        >
           <RoundButton
             variant="undo"
             size="md"
@@ -292,7 +315,14 @@ export function SwipeDeck({
       )}
 
       {cur && (
-        <span style={{ fontSize: 13, color: "var(--ink-500)", fontWeight: 500 }}>
+        <span
+          style={{
+            fontSize: 13,
+            color: "var(--ink-500)",
+            fontWeight: 500,
+            flexShrink: 0,
+          }}
+        >
           {deck.length} offen{filter !== "Alle" ? ` · ${FILTER_LABEL(filter)}` : ""}
         </span>
       )}

@@ -43,23 +43,30 @@ Eine einzige Supabase-Tabelle `final_results`:
 
 ## Features (dieser Stand)
 
-1. **Inbox** — Karten-Grid aller Zeilen im aktiven Status (Default `open`),
-   sortierbar nach **Views / Likes / Neueste** (absteigend).
-2. **Karte** — lazy-geladenes Thumbnail (nur Bild, kein Embed), Titel,
-   Hypothese, Plattform-Badge, Views, Likes, Fundzeitpunkt.
-3. **Detail-Ansicht (Modal)** — lädt **erst beim Öffnen** das passende Embed:
-   - YouTube: `iframe` aus der Video-ID
-   - TikTok: offizielles `embed.js`
-   - Instagram: offizielles `embed.js`
+1. **Swipe-Deck (Startseite `/`)** — Tinder-artiges Karten-Interface der
+   offenen Videos, in einem **bildschirmfüllenden, fixierten Frame** (kein
+   Seiten-Scrollen). Nach **rechts wischen = Annehmen**, **links = Ablehnen**,
+   oder die Buttons unten nutzen:
+   - ✕ Ablehnen → `declined`
+   - ↓ Zu oft verwendet → `decrease`
+   - ✓ Annehmen → `accepted`
+   - ↺ Undo → letzte Entscheidung zurück (Video wieder `open`)
 
-   Das jeweilige Skript wird nur geladen, wenn eine Karte dieser Plattform
-   geöffnet wird — nicht vorab für die ganze Seite.
-4. **Aktionen** — **Annehmen** (`accepted`), **Ablehnen** (`declined`),
-   **Zu oft verwendet** (`decrease`). Danach verlässt die Zeile die offene
-   Inbox und die Ansicht kehrt zum Grid zurück.
-5. **Status-Filter** — `open` / `accepted` / `declined` / `decrease`, damit
-   frühere Entscheidungen einsehbar bleiben.
-6. **Responsive** — nutzbar auf Desktop und Mobile.
+   Plattform-Chips (Alle/YouTube/TikTok/Instagram) filtern den Stapel
+   client-seitig. Jede Entscheidung schreibt den Status nach Supabase.
+2. **Karte** — full-bleed Thumbnail (nur Bild, lazy), Falschaussage-Badge,
+   die Hypothese als Claim (Display-Schrift), Titel, Views, Likes. Der
+   Play-Button öffnet das echte Embed.
+3. **Detail-/Video-Ansicht (Modal)** — lädt **erst beim Öffnen** das passende
+   Embed (YouTube-`iframe` aus der Video-ID, TikTok/Instagram `embed.js`). Das
+   Skript wird nur für die geöffnete Plattform geladen, nicht vorab.
+4. **Dashboard (`/dashboard`)** — erreichbar über den Button oben rechts:
+   - **KPIs**: Angenommen, Abgelehnt, Neue Videos (offen), Reichweite geprüft
+     (Summe der Views angenommener Videos)
+   - **Liste der angenommenen Videos** — antippen öffnet Embed + Aktionen
+     (Entscheidung revidierbar)
+5. **Responsive** — fixer Frame, auf Desktop zentriert, auf Mobile
+   bildschirmfüllend.
 
 ### Thumbnails
 

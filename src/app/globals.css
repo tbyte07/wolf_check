@@ -118,6 +118,7 @@ html,
 body {
   margin: 0;
   padding: 0;
+  height: 100%;
 }
 
 body {
@@ -132,7 +133,8 @@ body {
     radial-gradient(1000px 600px at 100% 110%, var(--sky-50), transparent 55%),
     var(--bg-app);
   background-attachment: fixed;
-  min-height: 100vh;
+  /* The app is a fixed, screen-sized frame — the page itself never scrolls. */
+  overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
