@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Eye, Heart, RotateCcw, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Check, Eye, Heart, TrendingDown, X } from "lucide-react";
 import type { FinalResult, Status } from "@/lib/types";
 import { formatCount, relativeDate } from "@/lib/format";
 import { updateStatus } from "@/app/actions";
@@ -17,10 +18,13 @@ import { InstagramEmbed } from "./embeds/InstagramEmbed";
 export function DetailModal({
   item,
   onClose,
+  showActions = true,
 }: {
   item: FinalResult;
   onClose: () => void;
+  showActions?: boolean;
 }) {
+  const router = useRouter();
   const [pending, setPending] = useState<Status | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,6 +45,7 @@ export function DetailModal({
     setError(null);
     const res = await updateStatus(item.link, status);
     if (res.ok) {
+      router.refresh(); // re-fetch the current (review) list so the row updates
       onClose();
     } else {
       setError(res.error);
@@ -205,39 +210,41 @@ export function DetailModal({
             )}
 
             {/* Actions */}
-            <div
-              style={{
-                display: "flex",
-                gap: 10,
-                flexWrap: "wrap",
-                marginTop: 4,
-              }}
-            >
-              <ActionButton
-                label="Annehmen"
-                icon={<Check size={18} />}
-                tone="accept"
-                loading={pending === "accepted"}
-                disabled={pending !== null}
-                onClick={() => act("accepted")}
-              />
-              <ActionButton
-                label="Ablehnen"
-                icon={<X size={18} />}
-                tone="reject"
-                loading={pending === "declined"}
-                disabled={pending !== null}
-                onClick={() => act("declined")}
-              />
-              <ActionButton
-                label="Zu oft verwendet"
-                icon={<RotateCcw size={18} />}
-                tone="warn"
-                loading={pending === "decrease"}
-                disabled={pending !== null}
-                onClick={() => act("decrease")}
-              />
-            </div>
+            {showActions && (
+              <div
+                style={{
+                  display: "flex",
+                  gap: 10,
+                  flexWrap: "wrap",
+                  marginTop: 4,
+                }}
+              >
+                <ActionButton
+                  label="Annehmen"
+                  icon={<Check size={18} />}
+                  tone="accept"
+                  loading={pending === "accepted"}
+                  disabled={pending !== null}
+                  onClick={() => act("accepted")}
+                />
+                <ActionButton
+                  label="Ablehnen"
+                  icon={<X size={18} />}
+                  tone="reject"
+                  loading={pending === "declined"}
+                  disabled={pending !== null}
+                  onClick={() => act("declined")}
+                />
+                <ActionButton
+                  label="Zu oft verwendet"
+                  icon={<TrendingDown size={18} />}
+                  tone="warn"
+                  loading={pending === "decrease"}
+                  disabled={pending !== null}
+                  onClick={() => act("decrease")}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

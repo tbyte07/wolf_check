@@ -4,6 +4,7 @@ import { Wordmark } from "@/components/Wordmark";
 import { FilterTabs } from "@/components/FilterTabs";
 import { SortToggle } from "@/components/SortToggle";
 import { InboxGrid } from "@/components/InboxGrid";
+import { SwipeDeck } from "@/components/SwipeDeck";
 
 export const dynamic = "force-dynamic";
 
@@ -111,9 +112,13 @@ export default async function Page({
 
       {error ? (
         <ErrorState message={error.message} />
+      ) : status === "open" ? (
+        // Main screen: the Tinder-style swipe deck of open videos.
+        <SwipeDeck items={items} />
       ) : items.length === 0 ? (
         <EmptyState status={status} />
       ) : (
+        // Decided tabs: a review grid of past decisions.
         <InboxGrid items={items} />
       )}
       </main>
