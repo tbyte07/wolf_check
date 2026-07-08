@@ -17,7 +17,7 @@ function isPlatform(v: string | null): v is Platform {
 
 export async function GET(req: NextRequest) {
   const link = req.nextUrl.searchParams.get("link");
-  const platform = req.nextUrl.searchParams.get("platform");
+  const platform = req.nextUrl.searchParams.get("platform")?.toLowerCase() ?? null;
 
   if (!link || !isPlatform(platform)) {
     return NextResponse.redirect(new URL(PLACEHOLDER, req.url));

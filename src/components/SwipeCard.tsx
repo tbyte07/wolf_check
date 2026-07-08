@@ -17,13 +17,11 @@ export function SwipeCard({
   drag,
   verdict,
   dragging,
-  onPlay,
 }: {
   item: FinalResult;
   drag: number;
   verdict: Verdict;
   dragging: boolean;
-  onPlay: () => void;
 }) {
   const thumb = `/api/thumb?platform=${item.plattform}&link=${encodeURIComponent(
     item.link
@@ -62,6 +60,13 @@ export function SwipeCard({
         src={thumb}
         alt=""
         draggable={false}
+        onError={(e) => {
+          const t = e.currentTarget;
+          if (!t.dataset.fallback) {
+            t.dataset.fallback = "1";
+            t.src = "/thumb-placeholder.svg";
+          }
+        }}
         style={{
           position: "absolute",
           inset: 0,
@@ -72,14 +77,14 @@ export function SwipeCard({
         }}
       />
 
-      {/* Play affordance → opens the real embed */}
-      <button
+      {/* Play affordance → opens the original video in a new tab */}
+      <a
+        href={item.link}
+        target="_blank"
+        rel="noopener noreferrer"
         onPointerDown={(e) => e.stopPropagation()}
-        onClick={(e) => {
-          e.stopPropagation();
-          onPlay();
-        }}
-        aria-label="Video ansehen"
+        onClick={(e) => e.stopPropagation()}
+        aria-label="Video in neuem Tab öffnen"
         style={{
           position: "absolute",
           top: "38%",
@@ -99,7 +104,7 @@ export function SwipeCard({
         }}
       >
         <Play size={26} style={{ marginLeft: 3 }} />
-      </button>
+      </a>
 
       {/* Top row: platform + views */}
       <div

@@ -54,7 +54,14 @@ export async function oembedThumbnail(
     if (platform === "tiktok") {
       const res = await fetch(
         `https://www.tiktok.com/oembed?url=${encodeURIComponent(link)}`,
-        { next: { revalidate: 60 * 60 * 24 } } // cache 24h
+        {
+          // TikTok's oEmbed can reject requests without a browser-like UA.
+          headers: {
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
+          },
+          next: { revalidate: 60 * 60 * 24 }, // cache 24h
+        }
       );
       if (!res.ok) return null;
       const data = (await res.json()) as { thumbnail_url?: string };

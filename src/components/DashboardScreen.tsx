@@ -1,22 +1,19 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import {
   ArrowLeft,
   Check,
-  ChevronRight,
+  ExternalLink,
   Play,
   Sparkles,
   TrendingUp,
   X,
 } from "lucide-react";
 import type { FinalResult, Status } from "@/lib/types";
-import { PLATFORM_LABELS } from "@/lib/types";
 import { formatCount } from "@/lib/format";
 import { PlatformBadge } from "./PlatformBadge";
-import { DetailModal } from "./DetailModal";
 
 // Dashboard: KPI stat cards + the list of accepted videos (waiting to be
 // turned into a debunk). Lives inside the fixed app frame; the body scrolls
@@ -32,8 +29,6 @@ export function DashboardScreen({
   accepted: FinalResult[];
   error: string | null;
 }) {
-  const [selected, setSelected] = useState<FinalResult | null>(null);
-
   return (
     <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
       {/* Header */}
@@ -155,15 +150,11 @@ export function DashboardScreen({
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {accepted.map((v) => (
-              <AcceptedRow key={v.link} item={v} onOpen={() => setSelected(v)} />
+              <AcceptedRow key={v.link} item={v} />
             ))}
           </div>
         )}
       </div>
-
-      {selected && (
-        <DetailModal item={selected} onClose={() => setSelected(null)} />
-      )}
     </div>
   );
 }
@@ -230,19 +221,15 @@ function StatCard({
   );
 }
 
-function AcceptedRow({
-  item,
-  onOpen,
-}: {
-  item: FinalResult;
-  onOpen: () => void;
-}) {
+function AcceptedRow({ item }: { item: FinalResult }) {
   const thumb = `/api/thumb?platform=${item.plattform}&link=${encodeURIComponent(
     item.link
   )}`;
   return (
-    <button
-      onClick={onOpen}
+    <a
+      href={item.link}
+      target="_blank"
+      rel="noopener noreferrer"
       style={{
         display: "flex",
         alignItems: "center",
@@ -272,6 +259,13 @@ function AcceptedRow({
           src={thumb}
           alt=""
           loading="lazy"
+          onError={(e) => {
+            const t = e.currentTarget;
+            if (!t.dataset.fallback) {
+              t.dataset.fallback = "1";
+              t.src = "/thumb-placeholder.svg";
+            }
+          }}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
         <span
@@ -314,11 +308,7 @@ function AcceptedRow({
           <span>{formatCount(item.views)} Views</span>
         </div>
       </div>
-      <ChevronRight
-        size={20}
-        color="var(--ink-400)"
-        style={{ flexShrink: 0 }}
-      />
-    </button>
+      <ExternalLink size={18} color="var(--ink-400)" style={{ flexShrink: 0 }} />
+    </a>
   );
 }

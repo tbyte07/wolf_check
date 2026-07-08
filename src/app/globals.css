@@ -147,6 +147,39 @@ a {
   text-decoration: none;
 }
 
+/* App frame — centered "phone" frame on desktop, full-screen on mobile. */
+.app-frame-outer {
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(0px, 3vw, 40px);
+}
+.app-frame-inner {
+  width: 100%;
+  max-width: 460px;
+  height: min(920px, 100%);
+  background: var(--bg-app);
+  border-radius: 30px;
+  box-shadow: 0 40px 90px rgba(22, 22, 28, 0.18);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 560px) {
+  .app-frame-outer {
+    padding: 0;
+  }
+  .app-frame-inner {
+    max-width: none;
+    height: 100%;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+}
+
 /* Display type helper — Barlow Semi Condensed, heavy italic, uppercase. */
 .disp {
   font-family: var(--font-display), "Arial Narrow", sans-serif;

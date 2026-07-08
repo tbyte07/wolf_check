@@ -7,7 +7,6 @@ import type { FinalResult, Platform, Status } from "@/lib/types";
 import { PLATFORM_COLORS, PLATFORM_LABELS } from "@/lib/types";
 import { updateStatus } from "@/app/actions";
 import { SwipeCard, type Verdict } from "./SwipeCard";
-import { DetailModal } from "./DetailModal";
 
 type Filter = Platform | "Alle";
 const FILTERS: Filter[] = ["Alle", "youtube", "tiktok", "instagram"];
@@ -40,7 +39,6 @@ export function SwipeDeck({
   const [verdict, setVerdict] = useState<Verdict>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [videoItem, setVideoItem] = useState<FinalResult | null>(null);
 
   const startX = useRef<number | null>(null);
   const dragRef = useRef(0);
@@ -110,6 +108,10 @@ export function SwipeDeck({
     if (dx > 110) commit("accept");
     else if (dx < -110) commit("reject");
     else {
+      // A near-zero move is a tap → open the original video in a new tab.
+      if (Math.abs(dx) < 8 && cur) {
+        window.open(cur.link, "_blank", "noopener,noreferrer");
+      }
       setDrag(0);
       dragRef.current = 0;
     }
@@ -212,10 +214,8 @@ export function SwipeDeck({
           onPointerCancel={onUp}
           style={{
             position: "relative",
+            width: "100%",
             height: "100%",
-            aspectRatio: "3 / 4.2",
-            maxWidth: "100%",
-            maxHeight: "100%",
             touchAction: "pan-y",
             cursor: cur ? "grab" : "default",
           }}
@@ -256,7 +256,6 @@ export function SwipeDeck({
               drag={drag}
               verdict={verdict}
               dragging={dragging}
-              onPlay={() => setVideoItem(cur)}
             />
           </>
           ) : (
@@ -325,15 +324,6 @@ export function SwipeDeck({
         >
           {deck.length} offen{filter !== "Alle" ? ` · ${FILTER_LABEL(filter)}` : ""}
         </span>
-      )}
-
-      {/* Video preview (real embed, lazy) — no status buttons here. */}
-      {videoItem && (
-        <DetailModal
-          item={videoItem}
-          showActions={false}
-          onClose={() => setVideoItem(null)}
-        />
       )}
     </div>
   );
